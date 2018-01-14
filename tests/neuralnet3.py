@@ -1,3 +1,8 @@
+# Author Dahlia Dry
+# Last Modified 12/8/2017
+# This program is the final version of the neural net used in this project.
+# FigNeuralNet -> model2 is the neural net used, a CNN with 96% classifying accuracy
+
 import keras
 import numpy as np
 from keras.models import Sequential

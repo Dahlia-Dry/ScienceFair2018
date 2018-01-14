@@ -1,3 +1,6 @@
+# Author Dahlia Dry
+# Last Modified 12/7/17
+# This program generates arrays of flux data and corresponding png images of light curves using ELCA
 
 import pickle
 import numpy as np

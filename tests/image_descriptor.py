@@ -1,3 +1,7 @@
+# Author Dahlia Dry
+# Last Modified 12/8/2017
+# This program contains various helper functions for the use of image descriptors
+
 import cv2
 from matplotlib import pyplot as plt
 import _pickle

@@ -1,3 +1,7 @@
+# Author Kyle Pearson (Searching for Exoplanets Using Artificial Intelligence, 2017)
+# Modified by Dahlia Dry 9/22/17
+# This program generates noisy light curves using gaussian distributions of the stellar parameters of Kepler recorded transits.
+
 import ctypes
 import numpy as np
 from os import environ

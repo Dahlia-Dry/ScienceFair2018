@@ -1,3 +1,8 @@
+# Author Dahlia Dry
+# Last Modified 12/8/2017
+# This program generates rawdata and png lightcurve images with periodic gaps
+
+
 from PIL import Image
 import cv2
 from matplotlib import pyplot as plt

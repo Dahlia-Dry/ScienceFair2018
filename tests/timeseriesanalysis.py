@@ -1,3 +1,7 @@
+# Author Dahlia Dry
+# Last Modified 12/7/2017
+# This program fills gaps in data by simulating noise and variance in a regression of the data between points a and b
+
 import pyflux as pf
 import numpy as np
 import matplotlib.pyplot as plt

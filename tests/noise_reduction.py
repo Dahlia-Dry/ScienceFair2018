@@ -1,3 +1,9 @@
+# Author Dahlia Dry
+# Last Modified 12/8/2017
+# This program contains various methods for reducing noise in light curve data
+# These methods are judged qualitatively through observing graphs
+# These methods are also judged indirectly by their effect on the overall accuracy of the neural net
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pyflux as pf

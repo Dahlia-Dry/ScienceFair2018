@@ -1,3 +1,7 @@
+# Author Dahlia Dry
+# Last Modified 12/8/2017
+# This program generates text files of keypoint vectors by applying SIFT image descriptors to light-curve png images
+
 from image_descriptor import *
 import os
 import math

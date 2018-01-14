@@ -1,3 +1,7 @@
+# Author Dahlia Dry
+# Last Modified 12/8/2017
+# This program creates cropped png images of the light curve data generated using ELCA
+
 import pickle
 import numpy as np
 from ELCA import transit
@@ -9,9 +13,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import cv2
 import glob
-
-
-
 
 def make_data(inputData):
     fullData = pd.DataFrame(columns = ['light_curve', 'status'])

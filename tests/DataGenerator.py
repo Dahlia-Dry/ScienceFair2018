@@ -1,3 +1,7 @@
+# Author Dahlia Dry
+# Last Modified 12/7/2017
+# Generates data using a library of light curves created using a modified version of ELCA
+
 from image_descriptor import *
 import keras
 import os
@@ -60,8 +64,6 @@ def gen_referenceFigDicts():
             partition["validation"].append(id1)
             labels[id1] = 1
     return partition, labels, listIDs
-=======
->>>>>>> 7de97c88bfde4ff002ed47c878e256370ae2dd23
 
 
 class KeyDataGenerator(object):
