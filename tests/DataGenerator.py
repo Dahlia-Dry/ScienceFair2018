@@ -7,68 +7,38 @@ from PIL import Image
 import math
 
 #dim  = 100
-keydatasize = 5000
-figdatasize = 5000
-
-def test_read():
-    script_dir = os.path.dirname(__file__)
-    rel_path1 = "data/lightCurveKeypoints/0key0.txt"
-    path = os.path.join(script_dir, rel_path1)
-    kp = read_keypoints(path)
-    img = format_img(os.path.join(script_dir, "data/lightCurvePlots/trainData/0fig0.png"))
-    show_features(img, kp)
-
-def gen_referenceKeyDicts():
-    partition = {"train": [], "validation": []}
-    labels = {}
-    listIDs = []
-    for i in range(0, keydatasize):
-        id0 = "0key%d" % i
-        id1 = "1key%d" % i
-        listIDs.append(id0)
-        listIDs.append(id1)
-        if i % 4 != 0:
-            partition["train"].append(id0)
-            labels[id0] = 0
-            partition["train"].append(id1)
-            labels[id1] = 1
-        else:
-            partition["validation"].append(id0)
-            labels[id0] = 0
-            partition["validation"].append(id1)
-            labels[id1] = 1
-    return partition, labels, listIDs
-
-def gen_referenceFigDicts():
-    partition = {"train": [], "validation": []}
-    labels = {}
-    listIDs = []
-    for i in range(0, figdatasize):
-        id0 = "0fig%d" % i
-        id1 = "1fig%d" % i
-        listIDs.append(id0)
-        listIDs.append(id1)
-        if i % 4 != 0:
-            partition["train"].append(id0)
-            labels[id0] = 0
-            partition["train"].append(id1)
-            labels[id1] = 1
-        else:
-            partition["validation"].append(id0)
-            labels[id0] = 0
-            partition["validation"].append(id1)
-            labels[id1] = 1
-    return partition, labels, listIDs
 
 
 class KeyDataGenerator(object):
     def __init__(self, dim_N = 100, dim_z = 7,
-                 batch_size = 32, shuffle = True):
+                 batch_size = 32, data_size=5000, shuffle = True):
         #initialization
         self.dim_N = dim_N #162 keypoints in 1 set
         self.dim_z = dim_z #attributes list
         self.batch_size = batch_size
+        self.data_size = data_size
         self.shuffle = shuffle
+
+    def gen_referenceKeyDicts(self):
+        partition = {"train": [], "validation": []}
+        labels = {}
+        listIDs = []
+        for i in range(0, self.data_size):
+            id0 = "0key%d" % i
+            id1 = "1key%d" % i
+            listIDs.append(id0)
+            listIDs.append(id1)
+            if i % 4 != 0:
+                partition["train"].append(id0)
+                labels[id0] = 0
+                partition["train"].append(id1)
+                labels[id1] = 1
+            else:
+                partition["validation"].append(id0)
+                labels[id0] = 0
+                partition["validation"].append(id1)
+                labels[id1] = 1
+        return partition, labels, listIDs
 
     def __get_exploration_order(self, listIDs):
         #generates order of exploration
@@ -128,14 +98,16 @@ class KeyDataGenerator(object):
                 yield X,y
 
 
+
 class FigDataGenerator(object):
     def __init__(self, dim_x = 480, dim_y = 640, dim_color = 2,
-                 batch_size = 32, shuffle = True):
+                 batch_size = 32, data_size = 5000, shuffle = True):
         #initialization
         self.dim_x = dim_x #640 pixel width
         self.dim_y = dim_y #480 pixel height
         self.dim_color = dim_color #2
         self.batch_size = batch_size
+        self.data_size = data_size
         self.shuffle = shuffle
 
     def __get_exploration_order(self, listIDs):
@@ -159,6 +131,27 @@ class FigDataGenerator(object):
 
             y[i] = labels[ID]
         return (X, y)
+
+    def gen_referenceFigDicts(self):
+        partition = {"train": [], "validation": []}
+        labels = {}
+        listIDs = []
+        for i in range(0, self.data_size):
+            id0 = "0fig%d" % i
+            id1 = "1fig%d" % i
+            listIDs.append(id0)
+            listIDs.append(id1)
+            if i % 4 != 0:
+                partition["train"].append(id0)
+                labels[id0] = 0
+                partition["train"].append(id1)
+                labels[id1] = 1
+            else:
+                partition["validation"].append(id0)
+                labels[id0] = 0
+                partition["validation"].append(id1)
+                labels[id1] = 1
+        return partition, labels, listIDs
 
     @threadsafe_generator
     def generate(self, labels, listIDs):
