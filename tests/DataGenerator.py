@@ -15,7 +15,7 @@ def test_read():
     rel_path1 = "data/lightCurveKeypoints/0key0.txt"
     path = os.path.join(script_dir, rel_path1)
     kp = read_keypoints(path)
-    img = format_img(os.path.join(script_dir, "data/lightCurvePlots/trainData/0fig0.png"))
+    img = format_img(os.path.join(script_dir, "data/lightCurvePlots/0fig0.png"))
     show_features(img, kp)
 
 def gen_referenceKeyDicts():

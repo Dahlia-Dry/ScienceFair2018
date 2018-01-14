@@ -261,14 +261,6 @@ class TimeSeries(object):
         data_segments = self._generate_data_segments()
         #length = len(a_array) + len(b_array) + len(gapdata) - 2
         data = []
-        """for i in range(0, length):
-                if i < len(a_array):
-                    data[i] = a_array[i]
-                elif i >= len(a_array) and i < (len(gapdata) - 1):
-                    data[i] = gapdata[i - len(a_array) + 1]
-                else:
-                    data[i] = b_array[i - len(a_array) - (len(gapdata) - 2)]"""
-
 
         for i in range(0, len(data_segments)):
             data.extend(data_segments[i][1])

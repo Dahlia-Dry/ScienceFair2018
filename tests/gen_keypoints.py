@@ -5,7 +5,7 @@ import numpy as np
 script_dir = os.path.dirname(__file__)
 def gen_keypoints(script_dir):
     for i in range (0, 5000):
-        rel_path0 = "data/lightCurvePlots/1fig%d.png" % i
+        rel_path0 = "data/lightCurvePlots/0fig%d.png" % i
         READ_PATH = os.path.join(script_dir, rel_path0)
         img = format_img(READ_PATH)
         (kp, desc) = gen_features(img)
@@ -35,7 +35,7 @@ def gen_keypoints(script_dir):
             for k in range(0, len(kp[j])):
                 if math.isnan(kp[j][k]):
                     print("yikes at %d %d" %(i,j))
-        rel_path1 = "data/lightCurveKeypoints/1key%d.txt" % i
+        rel_path1 = "data/lightCurveKeypoints/0key%d.txt" % i
         WRITE_PATH = os.path.join(script_dir, rel_path1)
         write_keypoints(kp, WRITE_PATH)
 
@@ -46,6 +46,6 @@ def test():
     rel_path1 = "data/lightCurveKeypoints/0key0.txt"
     path = os.path.join(script_dir, rel_path1)
     kp = read_keypoints(path)
-    img = format_img(os.path.join(script_dir, "data/lightCurvePlots/trainData/0fig0.png"))
+    img = format_img(os.path.join(script_dir, "data/lightCurvePlots/0fig0.png"))
 
 
