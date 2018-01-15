@@ -321,7 +321,12 @@ class TimeSeries(object):
         if plot is False:
             return data
         else:
-            plt.plot(data)
+            plt.plot(np.linspace(0,60,60), data[0:60], color= 'r')
+            plt.plot(np.linspace(60,120,60), data[60:120], color='b')
+            plt.plot(np.linspace(120,180,60), data[120:180], color='r')
+            plt.plot(np.linspace(180,240,60), data[180:240], color='b')
+            plt.plot(np.linspace(240,300,60), data[240:300], color='r')
+            plt.plot(np.linspace(300,360,60), data[300:360],color='b')
             plt.show()
 
 
@@ -333,10 +338,10 @@ plt.show()
 
 timeseries = TimeSeries(load, 4,4,3)
 gapdata, latent_variables = timeseries.create(sine=False)
-for i in latent_variables:
-    timeseries.plot_z(i)
-x = timeseries.stitch(gapdata, plot=False)
-timeseries.plot(x)
+#for i in latent_variables:
+    #timeseries.plot_z(i)
+timeseries.stitch(gapdata, plot=True)
+#timeseries.plot(x)
 
 
 
