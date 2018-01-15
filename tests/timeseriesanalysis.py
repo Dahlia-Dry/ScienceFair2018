@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 import scipy.stats as stat
+from scipy.optimize import leastsq
 
 
 class TimeSeries(object):
@@ -153,6 +154,22 @@ class TimeSeries(object):
             linregvals[i] = (m*(i+ax)) + b
         return linregvals
 
+    def _sinusoidal_regression(self, set_a, set_b, ax, bx):
+        set_a = np.asarray(set_a)
+        set_b = np.asarray(set_b)
+        ay = set_a[set_a.size - 1]
+        by = set_b[0]
+        r = np.abs(ay-by)
+        m = (by - ay) / (bx - ax)
+        n= np.abs(bx-ax)
+        sinregvals = np.empty(n)
+        for i in range(0, n):
+            if m < 0:
+                sinregvals[i] = np.cos(i - ax)
+            else:
+                sinregvals[i] = np.sin(i - ax)
+        return sinregvals
+
     def _noise_generator(self, set_a, set_b):
         set_a = np.asarray(set_a)
         set_b = np.asarray(set_b)
@@ -202,29 +219,38 @@ class TimeSeries(object):
             randomized_series[i] = linregvals[i] + noise_value
         return randomized_series
 
-    def create(self):
+    def create(self, sine):
         data_segments = self._generate_data_segments()
         gaps = self._get_gap_number()
         gapsets = gaps - 1
         latent_variables = []
-        linregvals = []
+        regvals = []
         noise = []
         randomized_series = []
         if self.end is False:
             x1 = data_segments[0][0]
             x2 = data_segments[1][0].split('-')
-            linregvals0 = self._linear_regression(data_segments[0][1], data_segments[1][1], int(x1), int(x2[0]))
+            regvals_a = self._linear_regression(data_segments[0][1], data_segments[1][1], int(x1), int(x2[0]))
+            regvals_b = self._sinusoidal_regression(data_segments[0][1], data_segments[1][1], int(x1), int(x2[0]))
+            if sine is True:
+                regvals0 = regvals_b
+            else:
+                regvals0 = regvals_a
             noise0 = self._single_noise_generator(data_segments[1][1])
-            randomized_series.append(self._single_randomization(linregvals0, noise0))
+            randomized_series.append(self._single_randomization(regvals0, noise0))
             for i in range(0, gapsets):
                 raw_latent_variables = self._latent_variable_distribution(data_segments[i+1][1], data_segments[i+2][1])
                 latent_variables.append(self._summarize_latent_variables(raw_latent_variables))
                 x1 = data_segments[i + 1][0].split('-')
                 x2 = data_segments[i + 2][0].split('-')
-                linregvals.append(self._linear_regression(data_segments[i + 1][1], data_segments[i + 2][1],
-                                                          int(x1[1]), int(x2[0])))
+                if sine is True:
+                    regvals.append(self._sinusoidal_regression(data_segments[i + 1][1], data_segments[i + 2][1],
+                                                               int(x1[1]), int(x2[0])))
+                else:
+                    regvals.append(self._linear_regression(data_segments[i + 1][1], data_segments[i + 2][1],
+                                                           int(x1[1]), int(x2[0])))
                 noise.append((self._noise_generator(data_segments[i + 1][1], data_segments[i + 2][1])))
-                randomized_series.append(self._randomization(linregvals[i], noise[i][0], noise[i][1]))
+                randomized_series.append(self._randomization(regvals[i], noise[i][0], noise[i][1]))
 
         else:
             for i in range(0, gapsets):
@@ -232,16 +258,26 @@ class TimeSeries(object):
                 latent_variables.append(self._summarize_latent_variables(raw_latent_variables))
                 x1 = data_segments[i][0].split('-')
                 x2 = data_segments[i + 1][0].split('-')
-                linregvals.append(self._linear_regression(data_segments[i][1], data_segments[i + 1][1],
-                                                          int(x1[1]), int(x2[0])))
+                if sine is True:
+                    regvals.append(self._sinusoidal_regression(data_segments[i][1], data_segments[i + 1][1],
+                                                           int(x1[1]), int(x2[0])))
+                else:
+                    regvals.append(self._linear_regression(data_segments[i][1], data_segments[i + 1][1],
+                                                           int(x1[1]), int(x2[0])))
                 noise.append((self._noise_generator(data_segments[i][1], data_segments[i + 1][1])))
-                randomized_series.append(self._randomization(linregvals[i], noise[i][0], noise[i][1]))
+                randomized_series.append(self._randomization(regvals[i], noise[i][0], noise[i][1]))
             x1 = data_segments[len(data_segments)-2][0].split('-')
             x2 = data_segments[len(data_segments)-1][0]
-            linregvals0 = self._linear_regression(data_segments[len(data_segments)-2][1],
-                                                  data_segments[len(data_segments)-1][1], int(x1[1]), int(x2))
+            regvals_a = self._linear_regression(data_segments[len(data_segments)-2][1],
+                                                data_segments[len(data_segments)-1][1], int(x1[1]), int(x2))
+            regvals_b = self._sinusoidal_regression(data_segments[len(data_segments)-2][1],
+                                                    data_segments[len(data_segments)-1][1], int(x1[1]), int(x2))
+            if sine is True:
+                regvals0 = regvals_b
+            else:
+                regvals0 = regvals_a
             noise0 = self._single_noise_generator(data_segments[len(data_segments)-2][1])
-            randomized_series.append(self._single_randomization(linregvals0, noise0))
+            randomized_series.append(self._single_randomization(regvals0, noise0))
 
         return randomized_series
 
@@ -287,7 +323,7 @@ plt.plot(load)
 plt.show()
 
 timeseries = TimeSeries(load, 3,3,1)
-gapdata = timeseries.create()
+gapdata = timeseries.create(sine=True)
 timeseries.stitch(gapdata, plot=True)
 
 

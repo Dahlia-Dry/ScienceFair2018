@@ -106,7 +106,7 @@ class KeyNeuralNet(KeyDataGenerator):
         vgg_model.add(Dense(4096, activation='relu'))
         vgg_model.add(Dropout(0.5))
 
-        vgg_model.add(Dense(1, activation='softmax'))
+        vgg_model.add(Dense(2, activation='softmax'))
 
         sgd = SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
         vgg_model.summary()
