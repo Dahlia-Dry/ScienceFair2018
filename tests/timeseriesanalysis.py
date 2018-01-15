@@ -130,6 +130,16 @@ class TimeSeries(object):
 
         return values
 
+    def get_latent_vars(self):
+        data_segments = self._generate_data_segments()
+        gaps = self._get_gap_number()
+        gapsets = gaps - 1
+        latent_variables = []
+        for i in range(0, gapsets):
+            raw_latent_variables = self._latent_variable_distribution(data_segments[i + 1][1], data_segments[i + 2][1])
+            latent_variables.append(self._summarize_latent_variables(raw_latent_variables))
+        return latent_variables
+
     def _summarize_latent_variables(self, vals):
         m = np.empty(len(vals))
         s = np.empty(len(vals))
@@ -160,14 +170,14 @@ class TimeSeries(object):
         ay = set_a[set_a.size - 1]
         by = set_b[0]
         r = np.abs(ay-by)
-        m = (by - ay) / (bx - ax)
+        m = (float)(by - ay) / (float)(bx - ax)
         n= np.abs(bx-ax)
         sinregvals = np.empty(n)
         for i in range(0, n):
-            if m < 0:
-                sinregvals[i] = np.cos(i - ax)
+            if m < 0.0:
+                sinregvals[i] = (0.5* r * np.cos(((np.pi /60)*(ax + i)))) + ay
             else:
-                sinregvals[i] = np.sin(i - ax)
+                sinregvals[i] = (0.5 * r * np.sin(((np.pi /60)*(ax + i))+30)) + ay
         return sinregvals
 
     def _noise_generator(self, set_a, set_b):
@@ -279,18 +289,17 @@ class TimeSeries(object):
             noise0 = self._single_noise_generator(data_segments[len(data_segments)-2][1])
             randomized_series.append(self._single_randomization(regvals0, noise0))
 
-        return randomized_series
+        return randomized_series, latent_variables
 
-    def plot(self, series, lv=True):
-        a_array, b_array, c_array = self._generate_data_segments()
-        raw_latent_variables = self._latent_variable_distribution(a_array, b_array)
-        latent_variables = self._summarize_latent_variables(raw_latent_variables)
-        if lv is True:
-            model = pf.ARIMA(series, self.ar, self.ma, self.integ, latent_variables)
-        else:
+    def plot(self, series, latent_variables = None):
+        series = series[180:360]
+        series = pd.DataFrame(series)
+        if latent_variables is None:
             model = pf.ARIMA(series, self.ar, self.ma, self.integ)
+        else:
+            model = pf.ARIMA(series, self.ar, self.ma, self.integ, latent_variables)
         model_fit = model.fit()
-        model.plot_fit()
+        model.plot_predict(30, past_values = 100)
 
     def plot_z(self, latent_variables):
         for i in range(0, len(latent_variables)):
@@ -317,14 +326,18 @@ class TimeSeries(object):
 
 
 
-loadpath = 'data/gapData/0gapraw14.txt'
+loadpath = 'data/gapData/0gapraw48.txt'
 load = np.loadtxt(loadpath)
 plt.plot(load)
 plt.show()
 
-timeseries = TimeSeries(load, 3,3,1)
-gapdata = timeseries.create(sine=True)
-timeseries.stitch(gapdata, plot=True)
+timeseries = TimeSeries(load, 4,4,3)
+gapdata, latent_variables = timeseries.create(sine=False)
+for i in latent_variables:
+    timeseries.plot_z(i)
+x = timeseries.stitch(gapdata, plot=False)
+timeseries.plot(x)
+
 
 
 
