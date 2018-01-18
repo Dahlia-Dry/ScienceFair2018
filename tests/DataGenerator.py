@@ -1,6 +1,8 @@
-# Author Dahlia Dry
-# Last Modified 12/7/2017
-# Generates data using a library of light curves created using a modified version of ELCA
+""" Author Dahlia Dry
+    Last Modified 12/7/2017
+    Generates data using a library of light curves
+    created using a modified version of ELCA
+"""
 
 from image_descriptor import *
 import keras
@@ -11,7 +13,6 @@ from PIL import Image
 import math
 
 #dim  = 100
-<<<<<<< HEAD
 keydatasize = 5000
 figdatasize = 5000
 

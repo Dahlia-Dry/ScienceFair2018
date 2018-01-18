@@ -1,6 +1,8 @@
-# Author Kyle Pearson (Searching for Exoplanets Using Artificial Intelligence, 2017)
-# Modified by Dahlia Dry 9/22/17
-# This program generates noisy light curves using gaussian distributions of the stellar parameters of Kepler recorded transits.
+"""Author Kyle Pearson (Searching for Exoplanets Using Artificial Intelligence, 2017)
+   Modified by Dahlia Dry 9/22/17
+   This program generates noisy light curves using gaussian distributions
+   of the stellar parameters of Kepler recorded transits.
+"""
 
 import ctypes
 import numpy as np
@@ -129,7 +131,9 @@ class param:
 
 
 class lc_fitter(object):
-    def __init__(self,t,data,dataerr=None,init=None,bounds=None,airmass=False,ls=True,nested=False,plot=False,loss='huber'):
+    def __init__(self,t,data,dataerr=None,
+                 init=None,bounds=None,airmass=False,
+                 ls=True,nested=False,plot=False,loss='huber'):
 
         self.t = np.array(t)
         self.y = np.array(data)
@@ -184,7 +188,8 @@ class lc_fitter(object):
 
         # params -> list of free parameters
         # kwargs -> keys for params, values of fixed parameters
-        res = least_squares(fcn2min,x0=initvals,kwargs=kargs,bounds=[up,lo],loss=self.loss)  #method='lm' does not support bounds
+        res = least_squares(fcn2min,x0=initvals,kwargs=kargs,bounds=[up,lo],loss=self.loss)
+        #method='lm' does not support bounds
         # https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.least_squares.html
 
         self.data['LS']['res'] = res
@@ -193,7 +198,8 @@ class lc_fitter(object):
 
         # compute uncertainties from covariance matrix from jacobian squared
         perr = np.sqrt( np.diag( np.linalg.inv( np.dot( res.jac.T, res.jac) ) )) # diag[ (J.T*J)^-1 ]^0.5
-        #perr *= (self.data['LS']['residuals']**2).sum()/( len(self.y) - len(freekeys ) ) # scale by variance, variance is very small ~1e-8
+        #perr *= (self.data['LS']['residuals']**2).sum()/( len(self.y) - len(freekeys ) )
+        #  scale by variance, variance is very small ~1e-8
         # TODO check the order of this, same as order of res.x?
 
 
@@ -291,7 +297,9 @@ class lc_fitter(object):
 
         # light curve plot
         if detrend:
-            ax_lc.errorbar( x, self.y/self.data[t]['airmass'], yerr=self.yerr/self.data[t]['airmass'], ls='none', marker='o', color='black')
+            ax_lc.errorbar( x, self.y/self.data[t]['airmass'],
+                            yerr=self.yerr/self.data[t]['airmass'],
+                            ls='none', marker='o', color='black')
             ax_lc.plot( x, self.data[t]['transit'],'r-', lw=2)
             # TODO propogate uncertainties
         else:
@@ -340,7 +348,8 @@ if __name__ == "__main__":
                         )
 
     for k in myfit.data['LS']['freekeys']:
-        print( '{}: {:.6f} +- {:.6f}'.format(k,myfit.data['LS']['parameters'][k],myfit.data['LS']['errors'][k]) )
+        print( '{}: {:.6f} +- {:.6f}'.format(k,myfit.data['LS']['parameters'][k],
+                                             myfit.data['LS']['errors'][k]) )
 
     myfit.plot_results(show=True,phase=True)
 

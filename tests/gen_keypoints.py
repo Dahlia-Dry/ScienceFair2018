@@ -1,12 +1,17 @@
-# Author Dahlia Dry
-# Last Modified 12/8/2017
-# This program generates text files of keypoint vectors by applying SIFT image descriptors to light-curve png images
+"""Author Dahlia Dry
+   Last Modified 12/8/2017
+   This program generates text files of keypoint vectors
+   by applying SIFT image descriptors to light-curve png images.
+   """
 
 from image_descriptor import *
 import os
 import math
 import numpy as np
+
 script_dir = os.path.dirname(__file__)
+
+
 def gen_keypoints(script_dir):
     for i in range (0, 5000):
         rel_path0 = "data/lightCurvePlots/0fig%d.png" % i
@@ -44,6 +49,7 @@ def gen_keypoints(script_dir):
         write_keypoints(kp, WRITE_PATH)
 
 gen_keypoints(script_dir)
+
 
 def test():
     script_dir = os.path.dirname(__file__)

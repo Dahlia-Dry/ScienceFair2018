@@ -1,6 +1,8 @@
-# Author Dahlia Dry
-# Last Modified 12/7/2017
-# This program fills gaps in data by simulating noise and variance in a regression of the data between points a and b
+""" Author Dahlia Dry
+    Last Modified 12/7/2017
+    This program fills gaps in data by simulating noise and variance
+    in a regression of the data between points a and b.
+"""
 
 import pyflux as pf
 import numpy as np
@@ -33,7 +35,8 @@ class TimeSeries(object):
             if self.full_data[j] == lowval:
                 if ((j == 0) or (j == len(self.full_data) - 1)) and (self.full_data[j] == lowval):
                     gap_indices.append(j)
-                elif (self.full_data[j - 1] != lowval) or (self.full_data[j + 1] != lowval):  # just get gap start and end points
+                elif (self.full_data[j - 1] != lowval) or (self.full_data[j + 1] != lowval):
+                    # just get gap start and end points
                     gap_indices.append(j)
 
         gap_ranges = np.empty((int((len(gap_indices) / 2)), 2))
@@ -108,8 +111,9 @@ class TimeSeries(object):
 
         values = np.empty((len(a_vals), len(a_vals[0])))
         for y in range(0, len(a_vals)):
-            #datasets with the 'b' indicator are scaled differently, use z-scores to average equivalent values in a and b distribution
-            if ( b_indicators== 'b' and a_indicators[y] != 'b') or (a_indicators[y] == b_indicators[y] != 'b'):
+            """datasets with the 'b' indicator are scaled differently, 
+               use z-scores to average equivalent values in a and b distribution"""
+            if (b_indicators == 'b' and a_indicators[y] != 'b') or (a_indicators[y] == b_indicators[y] != 'b'):
                 for z in range(0, len(a_vals[0])):
                     pA = stat.norm(a_means[y],a_sdevs[y]).cdf(a_vals[y][z])
                     bVal = stat.norm(b_means[y], b_sdevs[y]).ppf(pA)
@@ -136,7 +140,8 @@ class TimeSeries(object):
         gapsets = gaps - 1
         latent_variables = []
         for i in range(0, gapsets):
-            raw_latent_variables = self._latent_variable_distribution(data_segments[i + 1][1], data_segments[i + 2][1])
+            raw_latent_variables = self._latent_variable_distribution(data_segments[i + 1][1],
+                                                                      data_segments[i + 2][1])
             latent_variables.append(self._summarize_latent_variables(raw_latent_variables))
         return latent_variables
 
@@ -240,8 +245,12 @@ class TimeSeries(object):
         if self.end is False:
             x1 = data_segments[0][0]
             x2 = data_segments[1][0].split('-')
-            regvals_a = self._linear_regression(data_segments[0][1], data_segments[1][1], int(x1), int(x2[0]))
-            regvals_b = self._sinusoidal_regression(data_segments[0][1], data_segments[1][1], int(x1), int(x2[0]))
+            regvals_a = self._linear_regression(data_segments[0][1],
+                                                data_segments[1][1],
+                                                int(x1), int(x2[0]))
+            regvals_b = self._sinusoidal_regression(data_segments[0][1],
+                                                    data_segments[1][1],
+                                                    int(x1), int(x2[0]))
             if sine is True:
                 regvals0 = regvals_b
             else:
@@ -249,39 +258,48 @@ class TimeSeries(object):
             noise0 = self._single_noise_generator(data_segments[1][1])
             randomized_series.append(self._single_randomization(regvals0, noise0))
             for i in range(0, gapsets):
-                raw_latent_variables = self._latent_variable_distribution(data_segments[i+1][1], data_segments[i+2][1])
+                raw_latent_variables = self._latent_variable_distribution(data_segments[i+1][1],
+                                                                          data_segments[i+2][1])
                 latent_variables.append(self._summarize_latent_variables(raw_latent_variables))
                 x1 = data_segments[i + 1][0].split('-')
                 x2 = data_segments[i + 2][0].split('-')
                 if sine is True:
-                    regvals.append(self._sinusoidal_regression(data_segments[i + 1][1], data_segments[i + 2][1],
+                    regvals.append(self._sinusoidal_regression(data_segments[i + 1][1],
+                                                               data_segments[i + 2][1],
                                                                int(x1[1]), int(x2[0])))
                 else:
-                    regvals.append(self._linear_regression(data_segments[i + 1][1], data_segments[i + 2][1],
+                    regvals.append(self._linear_regression(data_segments[i + 1][1],
+                                                           data_segments[i + 2][1],
                                                            int(x1[1]), int(x2[0])))
                 noise.append((self._noise_generator(data_segments[i + 1][1], data_segments[i + 2][1])))
                 randomized_series.append(self._randomization(regvals[i], noise[i][0], noise[i][1]))
 
         else:
             for i in range(0, gapsets):
-                raw_latent_variables = self._latent_variable_distribution(data_segments[i][1], data_segments[i+1][1])
+                raw_latent_variables = self._latent_variable_distribution(data_segments[i][1],
+                                                                          data_segments[i+1][1])
                 latent_variables.append(self._summarize_latent_variables(raw_latent_variables))
                 x1 = data_segments[i][0].split('-')
                 x2 = data_segments[i + 1][0].split('-')
                 if sine is True:
-                    regvals.append(self._sinusoidal_regression(data_segments[i][1], data_segments[i + 1][1],
-                                                           int(x1[1]), int(x2[0])))
+                    regvals.append(self._sinusoidal_regression(data_segments[i][1],
+                                                               data_segments[i + 1][1],
+                                                               int(x1[1]), int(x2[0])))
                 else:
-                    regvals.append(self._linear_regression(data_segments[i][1], data_segments[i + 1][1],
+                    regvals.append(self._linear_regression(data_segments[i][1],
+                                                           data_segments[i + 1][1],
                                                            int(x1[1]), int(x2[0])))
-                noise.append((self._noise_generator(data_segments[i][1], data_segments[i + 1][1])))
+                noise.append((self._noise_generator(data_segments[i][1],
+                                                    data_segments[i + 1][1])))
                 randomized_series.append(self._randomization(regvals[i], noise[i][0], noise[i][1]))
             x1 = data_segments[len(data_segments)-2][0].split('-')
             x2 = data_segments[len(data_segments)-1][0]
             regvals_a = self._linear_regression(data_segments[len(data_segments)-2][1],
-                                                data_segments[len(data_segments)-1][1], int(x1[1]), int(x2))
+                                                data_segments[len(data_segments)-1][1],
+                                                int(x1[1]), int(x2))
             regvals_b = self._sinusoidal_regression(data_segments[len(data_segments)-2][1],
-                                                    data_segments[len(data_segments)-1][1], int(x1[1]), int(x2))
+                                                    data_segments[len(data_segments)-1][1],
+                                                    int(x1[1]), int(x2))
             if sine is True:
                 regvals0 = regvals_b
             else:
@@ -331,7 +349,7 @@ class TimeSeries(object):
 
 
 
-loadpath = 'data/gapData/0gapraw48.txt'
+loadpath = 'data/gapData/0gapraw48.txt' #used as example
 load = np.loadtxt(loadpath)
 plt.plot(load)
 plt.show()

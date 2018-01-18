@@ -1,6 +1,7 @@
-# Author Dahlia Dry
-# Last Modified 12/8/2017
-# This program generates rawdata and png lightcurve images with periodic gaps
+"""Author Dahlia Dry
+   Last Modified 12/8/2017
+   This program generates raw data and png lightcurve images with periodic gaps
+"""
 
 
 from PIL import Image
@@ -14,13 +15,15 @@ import colormap as cm
 
 script_dir = os.path.dirname(__file__)
 
-def blackout(x0, y0, intblk, intshow): #x0, y0 = dims, intblk = width of blackout, intshow = width of observation period
+
+def blackout(x0, y0, intblk, intshow):
+    # x0, y0 = dims, intblk = width of blackout, intshow = width of observation period
     for i in range(0,5000): #5000
         rel_path0 = "data/lightCurvePlots/1fig%d.png" % i
         READ_PATH = os.path.join(script_dir, rel_path0)
         rel_path1 = "data/gapLightCurvePlots/1gapfig%d.png" % i
         OUT_PATH = os.path.join(script_dir, rel_path1)
-        #source_img = Image.open(READ_PATH).convert("RGBA")
+        # source_img = Image.open(READ_PATH).convert("RGBA")
         img0 = format_img(READ_PATH)
         source_img = Image.fromarray(img0)
         blackout_img = Image.new('RGBA', (intblk, y0), "black")
@@ -35,7 +38,8 @@ def blackout(x0, y0, intblk, intshow): #x0, y0 = dims, intblk = width of blackou
             source_img.save(OUT_PATH, "PNG")
             buffer = buffer + (intshow + intblk)
 
-#blackout(490,360,40,40)
+# blackout(490,360,40,40)
+
 
 def gap_rawdata(status):
     for i in range(0,1000):
@@ -59,6 +63,7 @@ def gap_rawdata(status):
         np.savetxt(savefile, array)
 
 gap_rawdata(0)
+
 
 def test():
     s = np.loadtxt('data/gapData/0gapraw0.txt')

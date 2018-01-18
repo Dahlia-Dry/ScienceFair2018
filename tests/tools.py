@@ -1,6 +1,7 @@
-# Author Dahlia Dry
-# Last Modified 12/8/2017
-# This program optimizes the performance of the neural net's data generator by making it threadsafe
+"""Author Dahlia Dry
+   Last Modified 12/8/2017
+   This program optimizes the performance of the neural net's data generator by making it threadsafe
+   """
 
 import threading
 

@@ -1,6 +1,7 @@
-# Author Dahlia Dry
-# Last Modified 12/8/2017
-# This program creates cropped png images of the light curve data generated using ELCA
+"""Author Dahlia Dry
+   Last Modified 12/8/2017
+   This program creates cropped png images of the light curve data generated using ELCA
+"""
 
 import pickle
 import numpy as np
@@ -19,11 +20,13 @@ def make_data(inputData):
     for i in range(0, (int(len(inputData.results)/10))):
         for j in range(1, 3):
             if j == 1:
-                placeTrue = pd.DataFrame({'light_curve': inputData.results[i][j], 'status': 0}, columns = ['light_curve', 'status'])
+                placeTrue = pd.DataFrame({'light_curve': inputData.results[i][j], 'status': 0},
+                                         columns = ['light_curve', 'status'])
                 print(placeTrue[0:])
                 fullData.append(placeTrue)
             elif j == 2:
-                placeFalse = pd.DataFrame({'light_curve':inputData.results[i][j], 'status': 1}, columns = ['light_curve', 'status'])
+                placeFalse = pd.DataFrame({'light_curve':inputData.results[i][j], 'status': 1},
+                                          columns = ['light_curve', 'status'])
                 fullData.append(placeFalse)
     return fullData
 
@@ -74,7 +77,8 @@ if __name__ == "__main__":
 
     # training data
     pgrid = {
-        'rp': (np.array([200, 500, 1000, 2500, 5000, 10000]) / 1e6) ** 0.5,  # transit depth (ppm) -> Rp/Rs
+        'rp': (np.array([200, 500, 1000, 2500, 5000, 10000]) / 1e6) ** 0.5,
+        # transit depth (ppm) -> Rp/Rs
 
         'per': np.linspace(*[2, 4, 5]),
         'inc': np.array([86, 87, 90]),
@@ -84,7 +88,8 @@ if __name__ == "__main__":
         'phi': np.linspace(*[0, np.pi, 4]),
         'A': np.array([250, 500, 1000, 2000]) / 1e6,
         'w': np.array([6, 12, 24]) / 24.,  # periods in days
-        'PA': [-4 * dt, 4 * dt, 100],  # doubles amp, zeros amp between min time and max time, 1000=no amplitude change
+        'PA': [-4 * dt, 4 * dt, 100],  # doubles amp, zeros amp between min time and max time,
+        # 1000=no amplitude change
         'Pw': [-12 * dt, 4 * dt, 100],  # -12dt=period halfs, 4dt=period doubles, 1000=no change
     }
 
@@ -99,7 +104,8 @@ if __name__ == "__main__":
         'phi': np.linspace(*[0, np.pi, 4]),
         'A': np.array([250, 500, 1000, 2000]) / 1e6,
         'w': np.array([6, 12, 24]) / 24.,  # periods in days
-        'PA': [-4 * dt, 4 * dt, 100],  # doubles amp, zeros amp between min time and max time, 1000=no amplitude change
+        'PA': [-4 * dt, 4 * dt, 100],  # doubles amp, zeros amp between min time and max time,
+        # 1000=no amplitude change
         'Pw': [-12 * dt, 4 * dt, 100],  # -12dt=period halfs, 4dt=period doubles, 1000=no change
     }
 

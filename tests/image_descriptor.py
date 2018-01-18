@@ -1,6 +1,7 @@
-# Author Dahlia Dry
-# Last Modified 12/8/2017
-# This program contains various helper functions for the use of image descriptors
+""" Author Dahlia Dry
+    Last Modified 12/8/2017
+    This program contains various helper functions for the use of image descriptors
+"""
 
 import cv2
 from matplotlib import pyplot as plt
@@ -79,11 +80,11 @@ def read_keypoints(file_path): #return keypoint var compatible with cv2 methods
         kp.append(temp)
     return kp
 
-#to show image with mapped keypoints:
-    # format_img() -> gen_features() -> show_features()
+""" to show image with mapped keypoints:
+    format_img() -> gen_features() -> show_features()
 
-#to show 2 concatenated images with mapped keypoint matches:
-    # format_img() -> gen_features() -> map_keypoint_matches()
-
+    to show 2 concatenated images with mapped keypoint matches:
+    format_img() -> gen_features() -> map_keypoint_matches()
+"""
 #img = format_img('0fig0.png')
 #(kp, desc) = gen_features(img)

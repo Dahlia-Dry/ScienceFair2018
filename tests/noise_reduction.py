@@ -1,8 +1,9 @@
-# Author Dahlia Dry
-# Last Modified 12/8/2017
-# This program contains various methods for reducing noise in light curve data
-# These methods are judged qualitatively through observing graphs
-# These methods are also judged indirectly by their effect on the overall accuracy of the neural net
+""" Author Dahlia Dry
+    Last Modified 12/8/2017
+    This program contains various methods for reducing noise in light curve data
+    These methods are judged qualitatively through observing graphs
+    These methods are also judged indirectly by their effect on the overall accuracy of the neural net
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,23 +19,24 @@ class Stats(object):
         self.full_data = full_data
 
     def _get_noise(self):
-        model = pf.LocalLevel(self.full_data, family=pf.Normal())
+        model = pf.LLEV(self.full_data)
         x = model.fit()
         noise = model.return_noise()
         return noise
 
     def _get_margin(self):
-        model = pf.LocalLevel(self.full_data, family=pf.Normal())
+        model = pf.LLEV(self.full_data)
         x = model.fit()
         data = model.return_local_level()
         margin = data['margin']
         return margin
 
-    def _get_ma(self):
-        model = pf.LocalLevel(self.full_data, family = pf.Normal())
+    def _get_ma(self, data):
+        data = np.asarray(data)
+        model = pf.LLEV(data)
         x = model.fit()
-        data = model.return_local_level()
-        ma = data['data']
+        mas = model.return_local_level()
+        ma = mas['data']
         return ma
 
     def durbin_koopman_simulation(self, n = 10, plot = True):
@@ -77,12 +79,30 @@ class Stats(object):
         color = np.empty((len(z), 4))
         for idx in range(len(z)):
             color[idx] = scalarMap.to_rgba(z[idx])
-            ax.scatter(x[idx], y[idx], c=color[idx], s=30, edgecolor='')
+            ax.scatter(x[idx], y[idx], c=color[idx], s=10, edgecolor='')
         plt.show()
 
-    
+    def plot_llm(self):
+        model = pf.LLEV(self.full_data)
+        x= model.fit()
+        model.plot_fit()
 
-
+    def get_best_localLevel(self):
+        sim_data = self.durbin_koopman_simulation(n=10, plot=False)
+        sim_data = np.asarray(sim_data, (10, len(sim_data[0])))
+        m_avs = np.empty((len(sim_data), len(self._get_ma(sim_data[0]))))
+        for i in range(len(sim_data)):
+            m_avs[i] = self._get_ma(sim_data[i])
+        m_avs= np.asarray(m_avs)
+        ma = np.empty(len(m_avs[0]))
+        for j in range(len(m_avs[0])):
+            sum = 0
+            avg = 0
+            for k in range(len(m_avs)):
+                sum = sum + m_avs[k][j]
+            avg = sum / len(m_avs)
+            ma[j] = avg
+        return ma
 
 def test_colormap():
     NCURVES = 10
@@ -119,8 +139,12 @@ def test_colormap():
 
 
 # test_colormap()
-loadpath = 'data/rawData/0raw21.txt'
+loadpath = 'data/rawData/0raw7.txt'
 load = np.loadtxt(loadpath)
 stats = Stats(load)
 #stats.durbin_koopman_simulation()
-stats.plot_gaussian_density_sim()
+#stats.plot_gaussian_density_sim()
+stats.plot_llm()
+#ma = stats.get_best_localLevel()
+#plt.plot(ma)
+#plt.show()

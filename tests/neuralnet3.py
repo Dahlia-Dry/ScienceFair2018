@@ -1,8 +1,8 @@
-# Author Dahlia Dry
-# Last Modified 12/8/2017
-# This program is the final version of the neural net used in this project.
-# FigNeuralNet -> model2 is the neural net used, a CNN with 96% classifying accuracy
-
+"""Author Dahlia Dry
+   Last Modified 12/8/2017
+   This program is the final version of the neural net used in this project.
+   FigNeuralNet -> model2 is the neural net used, a CNN with 96% classifying accuracy
+"""
 import keras
 import numpy as np
 from keras.models import Sequential
@@ -33,10 +33,10 @@ figparams = {'dim_x': 480,
              'batch_size': 8,
              'shuffle': True}
 
-#model = Sequential()
-#model.add(Dense(32, input_shape=(100,7)))
-#model.add(Flatten())
-#model.add(Dense(1, activation = 'sigmoid'))
+# model = Sequential()
+# model.add(Dense(32, input_shape=(100,7)))
+# model.add(Flatten())
+# model.add(Dense(1, activation = 'sigmoid'))
 
 
 class KeyNeuralNet(KeyDataGenerator):
@@ -261,10 +261,13 @@ class KeyNeuralNet(KeyDataGenerator):
                             steps_per_epoch=len(keypartition['train']) // 64,
                             epochs=32,
                             validation_data=keyvalidation_generator,
-                            validation_steps=len(keypartition['validation']) // 64) """
+                            validation_steps=len(keypartition['validation']) // 64) 
+        """
 
         """ model.evaluate_generator(generator=keytraining_generator,
-                                 steps=len(keypartition['train']) // 64) """
+                                 steps=len(keypartition['train']) // 64) 
+        """
+
 
 class FigNeuralNet(FigDataGenerator):
     def __init__(self, figparams):
@@ -315,10 +318,6 @@ class FigNeuralNet(FigDataGenerator):
                             validation_steps=len(figpartition['validation']) // 64)
         model.evaluate_generator(generator=figtraining_generator,
                                  steps=len(figpartition['train']) // 64)
-
-
-
-
 
 
 nn = KeyNeuralNet(keyparams)
