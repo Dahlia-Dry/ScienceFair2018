@@ -142,9 +142,9 @@ def test_colormap():
 loadpath = 'data/rawData/0raw7.txt'
 load = np.loadtxt(loadpath)
 stats = Stats(load)
-#stats.durbin_koopman_simulation()
+stats.durbin_koopman_simulation()
 #stats.plot_gaussian_density_sim()
 #stats.plot_llm()
 #ma = stats.get_best_localLevel()
-plt.plot(ma)
-plt.show()
+#plt.plot(ma)
+#plt.show()
